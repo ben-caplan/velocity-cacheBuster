@@ -1,0 +1,22 @@
+## CACHE BUSTER
+#macro( cacheBuster $filePath $fileType )##
+## CHECK TO MAKE SURE $filePath IS SET
+#if( $UtilMethods.isSet($filePath) )##
+## get file name
+#set( $_file = $filePath.substring( $math.add($filePath.lastIndexOf('/'),1) ) )##
+## query dotCMS for file
+#set( $_cbFile = $dotcontent.pull("+structureName:FileAsset +FileAsset.fileName:${_file}", 1, 'modDate desc') )##
+## IF FILE IS FOUND GET/SET MODEDATE
+#if( $_cbFile.size() > 0 )##
+#set( $_cbFile = $_cbFile.get(0) )##
+#set( $_cbModDate = $date.format("yyyymmddHms", $_cbFile.modDate) )##
+#end##
+#if( $UtilMethods.isSet($fileType) )##
+#if( $fileType == 'link' || $fileType == 'stylesheet' || $fileType == 'css' )##
+<link type="text/css" rel="stylesheet" href="${filePath}?$!{_cbModDate}" />
+#elseif( $fileType == 'script' || $fileType == 'javascript' || $fileType == 'js' )##
+<script type="text/javascript" src="${filePath}?$!{_cbModDate}"></script>
+#end##
+#end##
+#end## isset $file
+#end## macro
