@@ -1,5 +1,5 @@
 ## CACHE BUSTER
-#macro( cacheBuster $filePath $fileType )##
+#macro( cacheBuster $filePath $fileType $mediaQuery )##
 ## CHECK TO MAKE SURE $filePath IS SET
 #if( $UtilMethods.isSet($filePath) )##
 ## get file name
@@ -13,7 +13,7 @@
 #end##
 #if( $UtilMethods.isSet($fileType) )##
 #if( $fileType == 'link' || $fileType == 'stylesheet' || $fileType == 'css' )##
-<link type="text/css" rel="stylesheet" href="${filePath}?$!{_cbModDate}" />
+<link type="text/css" rel="stylesheet" href="${filePath}?$!{_cbModDate}"#if( $UtilMethods.isSet($mediaQuery) ) media="${mediaQuery}"#end />
 #elseif( $fileType == 'script' || $fileType == 'javascript' || $fileType == 'js' )##
 <script type="text/javascript" src="${filePath}?$!{_cbModDate}"></script>
 #end##
