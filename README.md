@@ -10,10 +10,10 @@ To use this macro follow these easy steps:
 
 Here is an example of what the include code will look like
 
-    ## cacheBuster( "File/Path" 'js or css' )
+    ## cacheBuster( "File/Path" 'js or css' 'media-if css' )
     
-    #cacheBuster( '/css/sweet-sweet-styles.css' 'css' )
-    ## outputs <link type="text/css" rel="stylesheet" href="/css/sweet-sweet-styles.css?00000000000000" />
+    #cacheBuster( '/css/sweet-sweet-styles.css' 'css' 'print' )
+    ## outputs <link type="text/css" rel="stylesheet" href="/css/sweet-sweet-styles.css?00000000000000" media="print" />
     
     #cacheBuster( '/js/awesome-script.js' 'js' )
     ## outputs <script type="text/javascript" src="/js/awesome-script.js?00000000000000"></script>
