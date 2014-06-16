@@ -9,6 +9,7 @@ To use this macro follow these easy steps:
 2. Call the macro where you want the file to be includes
 
 Here is an example of what the include code will look like
+
 ```
 ## cacheBuster( "File/Path" 'js or css' 'media-if css' )
 
@@ -19,6 +20,6 @@ Here is an example of what the include code will look like
 ## outputs <script type="text/javascript" src="/js/awesome-script.js?00000000000000"></script>
 ```
 
-Note the "00000000000000" will be a time stamp of the last time that the file was edited. 
+_Note the "00000000000000" will be a time stamp of the last time that the file was edited._
 
 And that is it. Happy coding!
