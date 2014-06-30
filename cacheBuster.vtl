@@ -1,22 +1,51 @@
 ## CACHE BUSTER
+#set( $enqueuedFiles = [] )##
 #macro( cacheBuster $filePath $fileType $mediaQuery )##
-## CHECK TO MAKE SURE $filePath IS SET
-#if( $UtilMethods.isSet($filePath) )##
+## CHECK TO MAKE SURE $filePath IS SET AND NOT ALREADY INCLUDED ON THE PAGE SOMEWHERE...
+#if( $UtilMethods.isSet($filePath) && $enqueuedFiles.indexOf($filePath) < 0 )##
+## ADD FILE TO ENQUEUEDFILES ARRAY
+#set( $_dummy = $enqueuedFiles.add($filePath) )##
+## PROCESS FILE AND PRINT ON PAGE
 ## get file name
 #set( $_file = $filePath.substring( $math.add($filePath.lastIndexOf('/'),1) ) )##
+#if( $filePath.contains('assets.aquent.com') )##
+#set( $conhost = " +conhost:23836f6d-6a92-446f-b147-29e4724eedd8" )##
+#else##
+#set( $conhost = " +conhost:$!{host.identifier}" )##
+#end##
 ## query dotCMS for file
-#set( $_cbFile = $dotcontent.pull("+structureName:FileAsset +FileAsset.fileName:${_file}", 1, 'modDate desc') )##
+#set( $_cbFile = $dotcontent.pull("+structureName:FileAsset +FileAsset.fileName:${_file}$!{conhost} +languageId:1", 1, 'modDate desc') )##
 ## IF FILE IS FOUND GET/SET MODEDATE
 #if( $_cbFile.size() > 0 )##
 #set( $_cbFile = $_cbFile.get(0) )##
 #set( $_cbModDate = $date.format("yyyymmddHms", $_cbFile.modDate) )##
 #end##
-#if( $UtilMethods.isSet($fileType) )##
+## MODDATE FOUND, ADD CACHEBUSTER!
+#if( $UtilMethods.isSet($_cbModDate) )##
 #if( $fileType == 'link' || $fileType == 'stylesheet' || $fileType == 'css' )##
 <link type="text/css" rel="stylesheet" href="${filePath}?$!{_cbModDate}"#if( $UtilMethods.isSet($mediaQuery) ) media="${mediaQuery}"#end />
 #elseif( $fileType == 'script' || $fileType == 'javascript' || $fileType == 'js' )##
 <script type="text/javascript" src="${filePath}?$!{_cbModDate}"></script>
 #end##
+## NO MODEDATE :-(
+#else##
+#if( $UtilMethods.isSet($request.getParameter('debug')) )##
+<!-- DEBUG STARTS -->
+<!-- $!_cbModDate -->
+<!-- $filePath -->
+<!-- +structureName:FileAsset +FileAsset.fileName:${_file}$!{conhost} +languageId:1 -->
+<!-- DEBUG ENDS -->
 #end##
-#end## isset $file
+## RENDER HTML
+#if( $fileType == 'link' || $fileType == 'stylesheet' || $fileType == 'css' )##
+<link type="text/css" rel="stylesheet" href="${filePath}"#if( $UtilMethods.isSet($mediaQuery) ) media="${mediaQuery}"#end />
+#elseif( $fileType == 'script' || $fileType == 'javascript' || $fileType == 'js' )##
+<script type="text/javascript" src="${filePath}"></script>
+#end##
+#end##
+#set ( $_cbModDate   = '' )##
+#set ( $_file       = '' )##
+#set ( $_cbFile     = '' )##
+#set ( $conhost     = '' )##
+#end## isset $filePath && $filePath is not in $enqueuedFiles array
 #end## macro
